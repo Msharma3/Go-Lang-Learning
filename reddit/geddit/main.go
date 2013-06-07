@@ -1,13 +1,16 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/sourcec0de/Go-Lang-Learning/reddit"
 	"log"
 )
 
 func main() {
-	items, err := reddit.Get("golang")
+	rname := flag.String("r", "golang", "The name of a specified reddit")
+	flag.Parse()
+	items, err := reddit.Get(*rname)
 	if err != nil {
 		log.Fatal(err)
 	}
