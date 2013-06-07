@@ -5,10 +5,12 @@ package main
 // Each string is an import path. It tells Go tools where to find
 // the package. These package are all from the Go Standard Library.
 import (
-	"io"
+	"fmt"
+	// "io"
+	"encoding/json"
 	"log"
 	"net/http"
-	"os"
+	// "os"
 )
 
 // This is a function declaration. The main function takes
@@ -34,9 +36,30 @@ func main() {
 		// If not, bail, printing the HTTP status message ("500 Internal Server Error", for example)
 		log.Fatal(resp.Status)
 	}
-	// Use io.Copy to copy the HTTP response body to standard output(os.Stdout)
-	_, err = io.Copy(os.Stdout, resp.Body)
-	// The resp.Body type implements to io.Reader and os.Stdout implements io.Writer
+
+	// Declare Item
+	// type Item struct {
+	// 	Title string
+	// 	URL   string
+	// }
+	// Declare Response
+	type Response struct {
+		Data struct {
+			Children []struct {
+				Data struct {
+					Title string
+					URL   string
+				}
+			}
+		}
+	}
+
+	r := new(Response)
+	err = json.NewDecoder(resp.Body).Decode(r)
+
+	for _, child := range r.Data.Children {
+		fmt.Println(child.Data.Title)
+	}
 
 	if err != nil {
 		log.Fatal(err)
