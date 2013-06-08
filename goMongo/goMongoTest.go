@@ -1,14 +1,26 @@
 package main
 
 import (
+	"encoding/csv"
 	"github.com/garyburd/go-mongo/mongo"
 	"log"
-	// "os"
+	"os"
 	// "time"
-	// "fmt"
+	"fmt"
 )
 
 func main() {
+	// create file
+	file, err := os.Create("items.csv")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	// Create CSV Writer
+	writer := csv.NewWriter(file)
+
+	// Connect to MongoDB
 	conn, err := mongo.Dial("dharma.mongohq.com:10053")
 	if err != nil {
 		log.Fatal(err)
@@ -37,6 +49,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer cursor.Close()
+
 	// Iterate over all items in a collection
 	for cursor.HasNext() {
 		var m mongo.M
@@ -44,12 +57,20 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		// Iterate over all keys in returned
-		// doc and log the value of the map key
-		for k, _ := range m {
-			log.Print(k, ": ", m[k])
-		}
-	}
-	// expectedFieldValues(cursor, "item_name")
 
+		var record []string
+		for _, v := range m {
+			s := fmt.Sprint(v)
+			record = append(record, s)
+
+			// if str, ok := v.(string); ok {
+			// 	record = append(record, v)
+			// } else {
+			// 	// convert to type string
+			// 	// append record
+			// }
+		}
+		writer.Write(record)
+		writer.Flush()
+	}
 }

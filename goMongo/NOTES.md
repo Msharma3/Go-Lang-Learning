@@ -10,4 +10,4 @@ officially supported by 10Gen.
 
 In this case I would suggest using `Go-mongo`.
 
-I will return to the subject of mongoDB and Go once I mastered more of the basics of go.
+I will return to the subject of mongoDB and Go once I mastered more of the basics of go, and after I have created some csv files using the standard go library.
