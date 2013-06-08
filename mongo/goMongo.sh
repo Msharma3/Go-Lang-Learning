@@ -1,0 +1,1 @@
+go run goMongoExport/main.go -host dharma.mongohq.com:10053 -db nix_stagingv3 -user sync -pass vbnvbn45 -col items -out items.csv

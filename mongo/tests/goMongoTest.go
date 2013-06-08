@@ -1,12 +1,11 @@
-package main
+package goMongoTest
 
 import (
 	"encoding/csv"
+	"fmt"
 	"github.com/garyburd/go-mongo/mongo"
 	"log"
 	"os"
-	// "time"
-	"fmt"
 )
 
 func main() {
@@ -43,6 +42,13 @@ func main() {
 	// Create collections object
 	items := db.C("items")
 
+	// Auto Detect Headerline
+	var m mongo.M
+	err = items.Find(nil).One(&m)
+	if err != nil && err != mongo.Done {
+		log.Fatal(err)
+	}
+
 	// Create a cursor using Find query
 	cursor, err := items.Find(nil).Cursor()
 	if err != nil {
@@ -59,16 +65,10 @@ func main() {
 		}
 
 		var record []string
-		for _, v := range m {
+		var header []string
+		for k, _ := range m {
 			s := fmt.Sprint(v)
 			record = append(record, s)
-
-			// if str, ok := v.(string); ok {
-			// 	record = append(record, v)
-			// } else {
-			// 	// convert to type string
-			// 	// append record
-			// }
 		}
 		writer.Write(record)
 		writer.Flush()
